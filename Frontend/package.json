@@ -1,9 +1,5 @@
 {
-  "name": "webpack2_boilerplate",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/VitalyNikolaev/webpack2_boilerplate"
-  },
+  "name": "TextureCompresserFrontend",
   "version": "0.1.0",
   "devDependencies": {
     "css-loader": "^0.26.1",
