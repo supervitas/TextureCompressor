@@ -1,0 +1,3 @@
+rootProject.name = 'texturecompresser'
+include 'Backend'
+
