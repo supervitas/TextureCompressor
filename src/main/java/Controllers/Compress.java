@@ -66,7 +66,7 @@ public class Compress {
 
 
     private String CreateFoldersForJob(String jobID){
-        File dir = new File("upload/job/".concat(jobID));
+        File dir = new File("upload/job/".concat(jobID).concat("/result"));
         dir.mkdirs();
         return String.format("upload/job/%s/", jobID);
     }
