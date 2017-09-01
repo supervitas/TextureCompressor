@@ -1,5 +1,7 @@
 package Job;
 
+import sun.net.www.URLConnection;
+
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +51,10 @@ class JobCompress {
 
     private boolean isFileImage(Path path) {
         File f = new File(path.toString());
-        String mimeType = new MimetypesFileTypeMap().getContentType(f);
+        String mimeType = URLConnection.guessContentTypeFromName(f.getName());
+
+        if (mimeType == null) return false;
+
         String type = mimeType.split("/")[0];
         return type.equals("image");
     }
@@ -76,13 +81,10 @@ class JobCompress {
         int i = path.getFileName().toString().lastIndexOf('.');
         if (i > 0) {
             String extension = path.getFileName().toString().substring(i + 1);
-            System.out.println(extension);
             if (Objects.equals(extension, "png")) {
                 dxtCompression = "dds:compression=dxt5";
             }
         }
-
-        System.out.println(dxtCompression);
 
         String[] command = {convertPath, path.getFileName().toString(), "-flip", "-define", dxtCompression,
                 "-define", "dds:cluster-fit=true",
@@ -97,8 +99,6 @@ class JobCompress {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //convert $image -flip -define dds:compression=dxt1 -define dds:cluster-fit=true ${image%.*}.dds
 
     }
 

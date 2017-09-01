@@ -8,6 +8,7 @@ public class Main {
     public static void main(String[] args) {
         port(7000);
         threadPool(Runtime.getRuntime().availableProcessors());
+        deleteDirectory(new File("upload"));
 
         Compress compressController = new Compress();
 
@@ -22,7 +23,7 @@ public class Main {
     private static boolean deleteDirectory(File directory) {
         if(directory.exists()){
             File[] files = directory.listFiles();
-            if(null != files){
+            if (null != files) {
                 for (int i=0; i<files.length; i++) {
                     if(files[i].isDirectory()) {
                         deleteDirectory(files[i]);
