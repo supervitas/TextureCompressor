@@ -11,7 +11,7 @@ public class JobManager {
     public boolean CreateJobCompress(String folderWithTextures, int jobId) {
         if (currentJobsCount < MAXJOBS) {
             currentJobsCount++;
-            JobCompress job = new JobCompress(jobId, folderWithTextures, ()-> currentJobsCount--);
+            JobCompress job = new JobCompress(jobId, folderWithTextures, () -> currentJobsCount--);
             jobs.add(job);
 
             return true;

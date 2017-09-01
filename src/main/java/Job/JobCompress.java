@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 
@@ -32,7 +33,10 @@ class JobCompress {
                     .filter(Files::isRegularFile)
                     .forEach(file -> {
                         if (isFileImage(file)) {
+
+                            DDSCompress(file);
                             PVRCompress(file);
+
                         }
                     });
             onFinish.run();
@@ -50,8 +54,7 @@ class JobCompress {
         return type.equals("image");
     }
 
-    private void PVRCompress(Path path){
-        System.out.println(path.getFileName());
+    private void PVRCompress(Path path) {
         String[] command = {PVRTexToolPath, "-i", path.getFileName().toString(), "-o",
                 String.format("result/%s.pvr", path.getFileName().toString().replaceFirst("[.][^.]+$", "")),
         "-f", "PVRTC1_4,UBN,lRGB", "-q", "pvrtcbest", "-flip", "y", "-m"};
@@ -65,6 +68,38 @@ class JobCompress {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void DDSCompress(Path path) {
+        String dxtCompression = "dds:compression=dxt1";
+
+        int i = path.getFileName().toString().lastIndexOf('.');
+        if (i > 0) {
+            String extension = path.getFileName().toString().substring(i + 1);
+            System.out.println(extension);
+            if (Objects.equals(extension, "png")) {
+                dxtCompression = "dds:compression=dxt5";
+            }
+        }
+
+        System.out.println(dxtCompression);
+
+        String[] command = {convertPath, path.getFileName().toString(), "-flip", "-define", dxtCompression,
+                "-define", "dds:cluster-fit=true",
+                String.format("result/%s.dds", path.getFileName().toString().replaceFirst("[.][^.]+$", ""))};
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
+        processBuilder.directory(new File(path.toAbsolutePath().getParent().toString()));
+
+        try {
+            Process process = processBuilder.start();
+            process.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //convert $image -flip -define dds:compression=dxt1 -define dds:cluster-fit=true ${image%.*}.dds
+
     }
 
     boolean GetStatusOfJob() {
