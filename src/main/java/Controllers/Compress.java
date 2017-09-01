@@ -55,9 +55,13 @@ public class Compress {
                 e.printStackTrace();
             }
         }
-        jobManager.CreateJobCompress(jobFolder, jobID);
 
-        return JsonUtil.ToJson("jobID", jobID.toString());
+        if (jobManager.CreateJobCompress(jobFolder, jobID)){
+            return JsonUtil.ToJson("jobID", jobID.toString());
+        }
+
+        res.status(403);
+        return JsonUtil.ToJson("error", "All workers are busy. Repeat latter");
     }
 
     public String GetStatusOfCompressionJob(Request req, Response res){

@@ -13,13 +13,16 @@ class JobCompress {
     int jobId;
     private boolean jobDone = false;
     private String folderWithTextures;
+    private Runnable onFinish;
 
     private String PVRTexToolPath = "/Applications/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI";
     private String convertPath = "/usr/local/bin/convert";
 
-    JobCompress(int jobID, String folder) {
+
+    JobCompress(int jobID, String folder, Runnable onFinishCallback) {
         jobId = jobID;
         folderWithTextures = folder;
+        onFinish = onFinishCallback;
         new Thread(this::CompressFiles).run();
     }
 
@@ -32,9 +35,10 @@ class JobCompress {
                             PVRCompress(file);
                         }
                     });
+            onFinish.run();
             System.out.println("Done!");
             jobDone = true;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

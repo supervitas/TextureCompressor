@@ -5,16 +5,23 @@ import java.util.List;
 
 public class JobManager {
     private ArrayList<JobCompress> jobs = new ArrayList<>();
-    private int maxJobs = 4;
+    private final int MAXJOBS = 6;
+    private int currentJobsCount = 0;
 
-    public void CreateJobCompress(String folderWithTextures, int jobId) {
-        JobCompress job = new JobCompress(jobId, folderWithTextures);
-        jobs.add(job);
+    public boolean CreateJobCompress(String folderWithTextures, int jobId) {
+        if (currentJobsCount < MAXJOBS) {
+            currentJobsCount++;
+            JobCompress job = new JobCompress(jobId, folderWithTextures, ()-> currentJobsCount--);
+            jobs.add(job);
+
+            return true;
+        }
+        return false;
     }
 
     public boolean GetStatusOfJob(int jobId) {
         for (JobCompress job : jobs) {
-            if (job.jobId == jobId){
+            if (job.jobId == jobId) {
                 return job.GetStatusOfJob();
             }
         }
