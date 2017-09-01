@@ -5,6 +5,7 @@ import java.util.List;
 
 public class JobManager {
     private ArrayList<JobCompress> jobs = new ArrayList<>();
+    private int maxJobs = 4;
 
     public void CreateJobCompress(String folderWithTextures, int jobId) {
         JobCompress job = new JobCompress(jobId, folderWithTextures);

@@ -2,10 +2,12 @@ package Job;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
 
 class JobCompress {
     int jobId;
@@ -18,7 +20,7 @@ class JobCompress {
     JobCompress(int jobID, String folder) {
         jobId = jobID;
         folderWithTextures = folder;
-        CompressFiles();
+        new Thread(this::CompressFiles).run();
     }
 
     private void CompressFiles() {
@@ -30,6 +32,8 @@ class JobCompress {
                             PVRCompress(file);
                         }
                     });
+            System.out.println("Done!");
+            jobDone = true;
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -44,6 +48,19 @@ class JobCompress {
 
     private void PVRCompress(Path path){
         System.out.println(path.getFileName());
+        String[] command = {PVRTexToolPath, "-i", path.getFileName().toString(), "-o",
+                String.format("%s.pvr", path.getFileName().toString().replaceFirst("[.][^.]+$", "")),
+        "-f", "PVRTC1_4,UBN,lRGB", "-q", "pvrtcbest", "-flip", "y", "-m"};
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
+        processBuilder.directory(new File(path.toAbsolutePath().getParent().toString()));
+
+        try {
+            Process process = processBuilder.start();
+            process.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     boolean GetStatusOfJob() {

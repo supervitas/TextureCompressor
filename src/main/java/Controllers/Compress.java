@@ -15,8 +15,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 
-import static java.io.FileDescriptor.out;
-
 public class Compress {
 
     private String uploadFolder = "textures";
@@ -59,9 +57,7 @@ public class Compress {
         }
         jobManager.CreateJobCompress(jobFolder, jobID);
 
-        String result = JsonUtil.ToJson("jobID", jobID.toString());
-
-        return result;
+        return JsonUtil.ToJson("jobID", jobID.toString());
     }
 
     public String GetStatusOfCompressionJob(Request req, Response res){
