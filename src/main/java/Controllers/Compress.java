@@ -1,5 +1,6 @@
 package Controllers;
 
+import Job.JobManager;
 import Json.JsonUtil;
 import spark.Request;
 import spark.Response;
@@ -24,6 +25,7 @@ public class Compress {
     private int fileSizeThreshold = 1024;
 
     private Integer jobID = 0;
+    private JobManager jobManager = new JobManager();
 
     public String ReceiveTextures(Request req, Response res) {
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement(this.uploadFolder, this.maxFileSize,
@@ -38,7 +40,7 @@ public class Compress {
             e.printStackTrace();
         }
 
-        if (parts == null) {
+        if (parts == null || parts.size() == 0) {
             res.status(400);
             return JsonUtil.ToJson("error", "Files Not Passed");
         }
@@ -47,10 +49,6 @@ public class Compress {
         String jobFolder = CreateFoldersForJob(jobID.toString());
 
         for (Part part : parts) {
-            System.out.println("Name:" + part.getName());
-            System.out.println("Size: " + part.getSize());
-            System.out.println("Filename:" + part.getSubmittedFileName());
-
             Path out = Paths.get(jobFolder + part.getSubmittedFileName());
 
             try (final InputStream in = part.getInputStream()) {
@@ -59,6 +57,7 @@ public class Compress {
                 e.printStackTrace();
             }
         }
+        jobManager.CreateJobCompress(jobFolder, jobID);
 
         String result = JsonUtil.ToJson("jobID", jobID.toString());
 
