@@ -1,7 +1,6 @@
 package Job;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class JobManager {
     private ArrayList<JobCompress> jobs = new ArrayList<>();

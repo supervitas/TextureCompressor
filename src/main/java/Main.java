@@ -24,11 +24,11 @@ public class Main {
         if(directory.exists()){
             File[] files = directory.listFiles();
             if (null != files) {
-                for (int i=0; i<files.length; i++) {
-                    if(files[i].isDirectory()) {
-                        deleteDirectory(files[i]);
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteDirectory(file);
                     } else {
-                        files[i].delete();
+                        file.delete();
                     }
                 }
             }

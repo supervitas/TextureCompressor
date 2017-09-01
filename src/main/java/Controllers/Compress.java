@@ -56,7 +56,7 @@ public class Compress {
             }
         }
 
-        if (jobManager.CreateJobCompress(jobFolder, jobID)){
+        if (jobManager.CreateJobCompress(jobFolder, jobID)) {
             return JsonUtil.ToJson("jobID", jobID.toString());
         }
 

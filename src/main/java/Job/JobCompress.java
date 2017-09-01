@@ -26,7 +26,9 @@ class JobCompress {
         jobId = jobID;
         folderWithTextures = folder;
         onFinish = onFinishCallback;
-        new Thread(this::CompressFiles).run();
+
+        Thread t = new Thread(this::CompressFiles);
+        t.start();
     }
 
     private void CompressFiles() {
