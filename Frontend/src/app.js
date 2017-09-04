@@ -5,6 +5,8 @@ class App {
     constructor() {
         this._texturesForm = document.getElementById('texturesForm');
         this._files = document.getElementById('files');
+        this._compressBtn = document.getElementById('compressBtn');
+        this._jobID = null;
         this._addListeners();
     }
     _addListeners() {
@@ -13,6 +15,8 @@ class App {
     }
     _onSubmitTextures(event) {
         event.preventDefault();
+
+        this._compressBtn.disabled = true;
 
         const files = new FormData();
 
@@ -35,7 +39,7 @@ class App {
     }
 
     _waitForJobDone(jobID) {
-        const id = setInterval(() => {
+        this._jobID = setInterval(() => {
             fetch('/api/status', {
                 method: 'POST',
                 body : JSON.stringify({jobID})
@@ -45,11 +49,24 @@ class App {
                 }
                 return response.json();
             }).then((json) => {
-                console.log(json);
+                const processed = json.processedFiles;
+                const allFiles = json.allFiles;
+                const isReady = json.isReady;
+
+                if(isReady) {
+                    this._stopPendingJob();
+                }
             }).catch((err) => {
                 alert(err);
             })
         }, 3000)
+    }
+
+    _stopPendingJob() {
+        this._compressBtn.disabled = false;
+        this._files.value = "";
+
+        clearInterval(this._jobID);
     }
 
 }
