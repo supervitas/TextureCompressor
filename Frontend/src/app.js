@@ -24,7 +24,15 @@ class App {
         fetch('/api/compress', {
             method: 'POST',
             body: files
-        })
+        }).then((response, reject) => {
+            if (reject) {
+               alert(reject);
+               return
+            }
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+        });
     }
 }
 

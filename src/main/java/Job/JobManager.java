@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class JobManager {
     private ArrayList<JobCompress> jobs = new ArrayList<>();
-    private final int MAXJOBS = 6;
+    private final int MAXJOBS = Runtime.getRuntime().availableProcessors();
     private int currentJobsCount = 0;
 
     public boolean CreateJobCompress(String folderWithTextures, int jobId) {
@@ -26,5 +26,4 @@ public class JobManager {
         }
         return false;
     }
-
 }

@@ -1,3 +1,3 @@
-rootProject.name = 'texturecompresser'
+rootProject.name = 'texturecompressor'
 include 'Backend'
 
