@@ -37,7 +37,6 @@ public class JsonUtil {
             for (String field : fields) {
                 userData.put(field, obj.getString(field));
             }
-
         } catch (JSONException e) {
             return null;
         }

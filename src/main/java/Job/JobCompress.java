@@ -36,14 +36,11 @@ class JobCompress {
         try (Stream<Path> paths = Files.walk(Paths.get(folderWithTextures))) {
 
             paths.filter(Files::isRegularFile)
-                .forEach(file -> {
+                .peek(file -> {
                     if (isFileImage(file)) {
                         allFilesCount++;
                     }
-                });
-
-            paths.filter(Files::isRegularFile)
-                    .forEach(file -> {
+                }).forEach(file -> {
                         if (isFileImage(file)) {
 
                             DDSCompress(file);
