@@ -1,6 +1,7 @@
 package Job;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class JobManager {
     private ArrayList<JobCompress> jobs = new ArrayList<>();
@@ -18,12 +19,12 @@ public class JobManager {
         return false;
     }
 
-    public boolean GetStatusOfJob(int jobId) {
+    public HashMap<String, String> GetStatusOfJob(int jobId) {
         for (JobCompress job : jobs) {
             if (job.jobId == jobId) {
                 return job.GetStatusOfJob();
             }
         }
-        return false;
+        return null;
     }
 }

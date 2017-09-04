@@ -2,21 +2,24 @@ package Job;
 
 import sun.net.www.URLConnection;
 
-import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 
 class JobCompress {
     int jobId;
-    private boolean jobDone = false;
+    private Boolean jobDone = false;
     private String folderWithTextures;
     private Runnable onFinish;
+
+    private Integer allFilesCount = 0;
+    private Integer processedFilesCount = 0;
+
 
     private String PVRTexToolPath = "/Applications/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI";
     private String convertPath = "/usr/local/bin/convert";
@@ -31,14 +34,22 @@ class JobCompress {
 
     private void CompressFiles() {
         try (Stream<Path> paths = Files.walk(Paths.get(folderWithTextures))) {
-            paths
-                    .filter(Files::isRegularFile)
+
+            paths.filter(Files::isRegularFile)
+                .forEach(file -> {
+                    if (isFileImage(file)) {
+                        allFilesCount++;
+                    }
+                });
+
+            paths.filter(Files::isRegularFile)
                     .forEach(file -> {
                         if (isFileImage(file)) {
 
                             DDSCompress(file);
                             PVRCompress(file);
 
+                            processedFilesCount++;
                         }
                     });
             onFinish.run();
@@ -102,7 +113,12 @@ class JobCompress {
 
     }
 
-    boolean GetStatusOfJob() {
-        return jobDone;
+    HashMap<String, String> GetStatusOfJob() {
+        HashMap<String, String> status = new HashMap<>();
+        status.put("isReady", jobDone.toString());
+        status.put("allFiles", allFilesCount.toString());
+        status.put("processedFiles", processedFilesCount.toString());
+
+        return status;
     }
 }

@@ -1,7 +1,6 @@
 import "./app.css";
 import "jszip"
 
-
 class App {
     constructor() {
         this._texturesForm = document.getElementById('texturesForm');
@@ -31,9 +30,28 @@ class App {
             }
             return response.json();
         }).then((json) => {
-            console.log(json);
+            this._waitForJobDone(json.jobID);
         });
     }
+
+    _waitForJobDone(jobID) {
+        const id = setInterval(() => {
+            fetch('/api/status', {
+                method: 'POST',
+                body : JSON.stringify({jobID})
+            }).then((response, reject) => {
+                if(reject) {
+                    throw(reject);
+                }
+                return response.json();
+            }).then((json) => {
+                console.log(json);
+            }).catch((err) => {
+                alert(err);
+            })
+        }, 3000)
+    }
+
 }
 
 new App();

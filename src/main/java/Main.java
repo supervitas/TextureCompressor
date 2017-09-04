@@ -15,7 +15,7 @@ public class Main {
         path("/api", ()-> {
 
            post("/compress", compressController::ReceiveTextures);
-           get("/status", compressController::GetStatusOfCompressionJob);
+           post("/status", compressController::GetStatusOfCompressionJob);
 
         });
     }

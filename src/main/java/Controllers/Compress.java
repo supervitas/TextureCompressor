@@ -14,6 +14,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.HashMap;
+
+import static Json.JsonUtil.ParseJson;
 
 public class Compress {
 
@@ -64,8 +67,22 @@ public class Compress {
         return JsonUtil.ToJson("error", "All workers are busy. Repeat latter");
     }
 
-    public String GetStatusOfCompressionJob(Request req, Response res){
-        return "OK";
+    public String GetStatusOfCompressionJob(Request req, Response res) {
+        HashMap<String, String> userData = ParseJson(req.body(), new String[] {"jobID"});
+
+        if (userData == null || !userData.containsKey("jobID")) {
+            res.status(400);
+            return JsonUtil.ToJson("error", "Bad JSON");
+        }
+
+
+        HashMap<String, String> jobStatus = jobManager.GetStatusOfJob(Integer.parseInt(userData.get("jobID")));
+
+        if (jobStatus == null) {
+            return JsonUtil.ToJson("isReady", "false");
+        }
+
+        return JsonUtil.ToJson(jobStatus);
     }
 
 
