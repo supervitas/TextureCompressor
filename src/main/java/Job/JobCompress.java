@@ -17,6 +17,7 @@ class JobCompress {
     private Boolean jobDone = false;
     private String folderWithTextures;
     private Runnable onFinish;
+    private String path = null;
 
     private Integer allFilesCount = 0;
     private Integer processedFilesCount = 0;
@@ -60,8 +61,9 @@ class JobCompress {
     }
 
     private void ZipResult() {
-        System.out.println(folderWithTextures);
-//        ZipUtil.pack(new File(folderWithTextures), new File(folderWithTextures.concat("result.zip")));
+        ZipUtil.pack(new File(folderWithTextures.concat("result")).getAbsoluteFile(),
+                new File(folderWithTextures.concat("result.zip")));
+        path = folderWithTextures.concat("result.zip");
     }
 
     private boolean isFileImage(Path path) {
@@ -122,6 +124,10 @@ class JobCompress {
         status.put("isReady", jobDone.toString());
         status.put("allFiles", allFilesCount.toString());
         status.put("processedFiles", processedFilesCount.toString());
+
+        if (path != null) {
+            status.put("path", path);
+        }
 
         return status;
     }

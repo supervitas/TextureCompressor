@@ -22,7 +22,7 @@ public class Compress {
 
     private String uploadFolder = "textures";
     private long maxFileSize = 20000000; // 20 mb per file
-    private long maxRequestSize = 200000000; // 200 mb per request
+    private long maxRequestSize = 300000000; // 300 mb per request
     private int fileSizeThreshold = 1024;
 
     private Integer jobID = 0;

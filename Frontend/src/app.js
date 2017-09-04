@@ -59,10 +59,13 @@ class App {
                 const isReady = json.isReady === 'true';
 
                 if (isReady) {
+                    const path = json.path;
                     this._stopPendingJob();
+                    this._downloadCompressedTextures(path);
                 }
             }).catch((err) => {
                 alert(err);
+                this._stopPendingJob();
             })
         }, 3000)
     }
@@ -71,6 +74,10 @@ class App {
         this._compressBtn.disabled = false;
         this._files.value = "";
         clearInterval(this._jobID);
+    }
+
+    _downloadCompressedTextures(path) {
+        console.log(path);
     }
 }
 
