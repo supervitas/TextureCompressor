@@ -11,7 +11,6 @@ class App {
     }
     _addListeners() {
         this._texturesForm.addEventListener('submit', this._onSubmitTextures.bind(this));
-
     }
     _onSubmitTextures(event) {
         event.preventDefault();
@@ -27,14 +26,18 @@ class App {
         fetch('/api/compress', {
             method: 'POST',
             body: files
-        }).then((response, reject) => {
-            if (reject) {
-               alert(reject);
-               return
-            }
-            return response.json();
+        }).then((response) => {
+            return response.json().then((json)=> {
+                if (!response.ok) {
+                    return Promise.reject(json.error);
+                }
+                return Promise.resolve(json);
+            });
         }).then((json) => {
             this._waitForJobDone(json.jobID);
+        }).catch((err) => {
+            alert(err);
+            this._compressBtn.disabled = false;
         });
     }
 
@@ -43,17 +46,19 @@ class App {
             fetch('/api/status', {
                 method: 'POST',
                 body : JSON.stringify({jobID})
-            }).then((response, reject) => {
-                if(reject) {
-                    throw(reject);
-                }
-                return response.json();
+            }).then((response) => {
+                return response.json().then((json)=> {
+                    if (!response.ok) {
+                        return Promise.reject(json.error);
+                    }
+                    return Promise.resolve(json);
+                });
             }).then((json) => {
                 const processed = json.processedFiles;
                 const allFiles = json.allFiles;
-                const isReady = json.isReady;
+                const isReady = json.isReady === 'true';
 
-                if(isReady) {
+                if (isReady) {
                     this._stopPendingJob();
                 }
             }).catch((err) => {
@@ -65,10 +70,8 @@ class App {
     _stopPendingJob() {
         this._compressBtn.disabled = false;
         this._files.value = "";
-
         clearInterval(this._jobID);
     }
-
 }
 
 new App();

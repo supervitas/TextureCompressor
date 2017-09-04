@@ -1,5 +1,6 @@
 package Job;
 
+import org.zeroturnaround.zip.ZipUtil;
 import sun.net.www.URLConnection;
 
 import java.io.File;
@@ -41,20 +42,26 @@ class JobCompress {
                         allFilesCount++;
                     }
                 }).forEach(file -> {
-                        if (isFileImage(file)) {
+                    if (isFileImage(file)) {
 
-                            DDSCompress(file);
-                            PVRCompress(file);
+                        DDSCompress(file);
+                        PVRCompress(file);
 
-                            processedFilesCount++;
-                        }
-                    });
+                        processedFilesCount++;
+                    }
+                });
+            ZipResult();
             onFinish.run();
             System.out.println("Done!");
             jobDone = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void ZipResult() {
+        System.out.println(folderWithTextures);
+//        ZipUtil.pack(new File(folderWithTextures), new File(folderWithTextures.concat("result.zip")));
     }
 
     private boolean isFileImage(Path path) {
