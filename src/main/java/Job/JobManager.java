@@ -27,4 +27,8 @@ public class JobManager {
         }
         return null;
     }
+
+    public void ClearJobs() {
+        jobs.clear();
+    }
 }

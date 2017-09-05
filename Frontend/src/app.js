@@ -10,7 +10,6 @@ class App {
 
         this._jobID = null;
         this._addListeners();
-
     }
     _addListeners() {
         this._texturesForm.addEventListener('submit', this._onSubmitTextures.bind(this));

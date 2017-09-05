@@ -28,6 +28,11 @@ public class Compress {
     private Integer jobID = 0;
     private JobManager jobManager = new JobManager();
 
+    public void ClearJobs() {
+        jobID = 0;
+        jobManager.ClearJobs();
+    }
+
     public String ReceiveTextures(Request req, Response res) {
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement(this.uploadFolder, this.maxFileSize,
                 this.maxRequestSize, this.fileSizeThreshold);
@@ -91,5 +96,4 @@ public class Compress {
         dir.mkdirs();
         return String.format("upload/job/%s/", jobID);
     }
-
 }
