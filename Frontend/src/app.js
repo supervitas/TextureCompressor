@@ -1,5 +1,4 @@
-import "./app.css";
-import "jszip"
+import './app.css';
 
 class App {
     constructor() {
@@ -72,7 +71,7 @@ class App {
 
     _stopPendingJob() {
         this._compressBtn.disabled = false;
-        this._files.value = "";
+        this._files.value = '';
         clearInterval(this._jobID);
     }
 

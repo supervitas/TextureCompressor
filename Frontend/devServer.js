@@ -5,7 +5,6 @@ const config = require('./webpack.config');
 const path = require('path');
 
 config.entry.app.unshift('webpack-dev-server/client?http://localhost:9000/', 'webpack/hot/dev-server');
-config['devtool'] = 'eval-source-map';
 config['plugins'].push(
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin()
