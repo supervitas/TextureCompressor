@@ -35,25 +35,30 @@ class JobCompress {
     }
 
     private void CompressFiles() {
-        try (Stream<Path> paths = Files.walk(Paths.get(folderWithTextures))) {
+        try {
+            Files.walk(Paths.get(folderWithTextures))
+                    .filter(Files::isRegularFile)
+                    .forEach(file -> {
+                        if (isFileImage(file)) {
+                            allFilesCount++;
+                        }
+                    });
 
-            paths.filter(Files::isRegularFile)
-                .peek(file -> {
-                    if (isFileImage(file)) {
-                        allFilesCount++;
-                    }
-                }).forEach(file -> {
-                    if (isFileImage(file)) {
+            Files.walk(Paths.get(folderWithTextures))
+                    .filter(Files::isRegularFile)
+                    .forEach(file -> {
+                        if (isFileImage(file)) {
 
-                        DDSCompress(file);
-                        PVRCompress(file);
+                            DDSCompress(file);
+                            PVRCompress(file);
 
-                        processedFilesCount++;
-                    }
+                            new File(file.toString()).delete(); // delete original after compressing
+
+                            processedFilesCount++;
+                        }
                 });
             ZipResult();
             onFinish.run();
-            System.out.println("Done!");
             jobDone = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,15 +86,7 @@ class JobCompress {
                 String.format("result/%s.pvr", path.getFileName().toString().replaceFirst("[.][^.]+$", "")),
         "-f", "PVRTC1_4,UBN,lRGB", "-q", "pvrtcbest", "-flip", "y", "-m"};
 
-        ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
-        processBuilder.directory(new File(path.toAbsolutePath().getParent().toString()));
-
-        try {
-            Process process = processBuilder.start();
-            process.waitFor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        CreateAwaitableProcess(command, path);
     }
 
     private void DDSCompress(Path path) {
@@ -107,6 +104,10 @@ class JobCompress {
                 "-define", "dds:cluster-fit=true",
                 String.format("result/%s.dds", path.getFileName().toString().replaceFirst("[.][^.]+$", ""))};
 
+        CreateAwaitableProcess(command, path);
+    }
+
+    private void CreateAwaitableProcess(String[] command, Path path) {
         ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
         processBuilder.directory(new File(path.toAbsolutePath().getParent().toString()));
 
@@ -116,7 +117,6 @@ class JobCompress {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     HashMap<String, String> GetStatusOfJob() {

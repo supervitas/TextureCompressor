@@ -5,14 +5,21 @@ class App {
         this._texturesForm = document.getElementById('texturesForm');
         this._files = document.getElementById('files');
         this._compressBtn = document.getElementById('compressBtn');
+        this._linkContainer = document.getElementById('link');
+        this._statusContainer = document.getElementById('status');
+
         this._jobID = null;
         this._addListeners();
+
     }
     _addListeners() {
         this._texturesForm.addEventListener('submit', this._onSubmitTextures.bind(this));
     }
     _onSubmitTextures(event) {
         event.preventDefault();
+
+        this._clearNode(this._linkContainer);
+        this._clearNode(this._statusContainer);
 
         this._compressBtn.disabled = true;
 
@@ -57,10 +64,12 @@ class App {
                 const allFiles = json.allFiles;
                 const isReady = json.isReady === 'true';
 
+                this._updateStatusOfCompressing(processed, allFiles);
+
                 if (isReady) {
                     const path = json.path;
                     this._stopPendingJob();
-                    this._downloadCompressedTextures(path);
+                    this._createLink(path);
                 }
             }).catch((err) => {
                 alert(err);
@@ -75,8 +84,29 @@ class App {
         clearInterval(this._jobID);
     }
 
-    _downloadCompressedTextures(path) {
-        console.log(path);
+    _clearNode(node) {
+        while (node.firstChild) {
+            node.removeChild(node.firstChild);
+        }
+    }
+
+    _updateStatusOfCompressing(filesCompressed, filesTotal) {
+        this._clearNode(this._statusContainer);
+
+        const t = document.createTextNode(`Compressed: ${filesCompressed} Total: ${filesTotal}`);
+        this._statusContainer.appendChild(t);
+    }
+
+    _createLink(link) {
+        this._clearNode(this._linkContainer);
+
+        const a = document.createElement('a');
+        const linkText = document.createTextNode("Result");
+
+        a.appendChild(linkText);
+        a.title = "Download Compressed Textures";
+        a.href = link;
+        this._linkContainer.appendChild(a);
     }
 }
 
