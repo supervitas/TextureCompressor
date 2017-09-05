@@ -46,8 +46,6 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
-#dist
-/dist
 
 #OSX
 *.DS_Store

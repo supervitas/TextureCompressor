@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 
 class JobCompress {
@@ -23,9 +22,10 @@ class JobCompress {
     private Integer processedFilesCount = 0;
 
 
-    private String PVRTexToolPath = "/Applications/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI";
-    private String convertPath = "/usr/local/bin/convert";
-
+//    private String PVRTexToolPath = "/Applications/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI";
+//    private String convertPath = "/usr/local/bin/convert";
+    private String PVRTexToolPath = "/opt/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/Linux_x86_64";
+    private String convertPath = "/usr/bin/convert";
 
     JobCompress(int jobID, String folder, Runnable onFinishCallback) {
         jobId = jobID;
@@ -37,26 +37,27 @@ class JobCompress {
     private void CompressFiles() {
         try {
             Files.walk(Paths.get(folderWithTextures))
-                    .filter(Files::isRegularFile)
-                    .forEach(file -> {
-                        if (isFileImage(file)) {
-                            allFilesCount++;
-                        }
-                    });
+                .filter(Files::isRegularFile)
+                .forEach(file -> {
+                    if (isFileImage(file)) {
+                        allFilesCount++;
+                    }
+                });
 
             Files.walk(Paths.get(folderWithTextures))
-                    .filter(Files::isRegularFile)
-                    .forEach(file -> {
-                        if (isFileImage(file)) {
+                .filter(Files::isRegularFile)
+                .forEach(file -> {
+                    if (isFileImage(file)) {
 
-                            DDSCompress(file);
-                            PVRCompress(file);
+                        DDSCompress(file);
+                        PVRCompress(file);
 
-                            new File(file.toString()).delete(); // delete original after compressing
+                        new File(file.toString()).delete(); // delete original after compressing
 
-                            processedFilesCount++;
-                        }
+                        processedFilesCount++;
+                    }
                 });
+
             ZipResult();
             onFinish.run();
             jobDone = true;
