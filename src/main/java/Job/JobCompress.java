@@ -22,10 +22,13 @@ class JobCompress {
     private Integer processedFilesCount = 0;
 
 
-//    private String PVRTexToolPath = "/Applications/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI";
-//    private String convertPath = "/usr/local/bin/convert";
-    private String PVRTexToolPath = "/opt/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/Linux_x86_64";
-    private String convertPath = "/usr/bin/convert";
+    //OS X
+    private String PVRTexToolPath = "/Applications/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI";
+    private String convertPath = "/usr/local/bin/convert";
+
+    // linux
+//    private String PVRTexToolPath = "/opt/Imagination/PowerVR_Graphics/PowerVR_Tools/PVRTexTool/CLI/Linux_x86_64/PVRTexToolCLI";
+//    private String convertPath = "/usr/bin/convert";
 
     JobCompress(int jobID, String folder, Runnable onFinishCallback) {
         jobId = jobID;
